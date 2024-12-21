@@ -16,7 +16,7 @@ const asyncFilter = (array, asyncCallback, resultCallback) => {
       }
 
       if (++counter === arrayLength) {
-        resultCallback(null, arrayOfResults);
+        resultCallback(null, arrayOfResults.filter((item) => item !== null));
       }
     });
   });
@@ -33,6 +33,6 @@ asyncFilter(
     i++;
   },
   (err, result) => {
-    console.log(err, result);
+    console.log(err, result); // null [2, 4, 6]
   }
 );
