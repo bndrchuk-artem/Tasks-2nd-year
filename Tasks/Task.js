@@ -22,3 +22,17 @@ const asyncFilter = (array, asyncCallback, finalCallback) => {
     });
   });
 };
+
+// Use case
+
+asyncFilter(
+  [1, 2, 3, 4, 5, 6],
+  (number, cb) => {
+    setTimeout(() => {
+      cb(null, number % 2 === 0);
+    }, 1000);
+  },
+  (err, result) => {
+    console.log(err, result);
+  }
+);
