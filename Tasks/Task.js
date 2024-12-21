@@ -1,8 +1,9 @@
 'use strict';
 
 const asyncFilter = (array, asyncCallback, finalCallback) => {
-  const results = [];
-  let counter = array.length;
+  const arrayLength = array.length;
+  const arrayOfResults = new Array(arrayLength).fill(null);
+  let counter = 0;
 
   array.forEach((item, index) => {
     asyncCallback(item, (err, include) => {
@@ -12,25 +13,26 @@ const asyncFilter = (array, asyncCallback, finalCallback) => {
       }
 
       if (include) {
-        results.push(item);
+        arrayOfResults[index] = item;
       }
 
-      counter--;
-      if (counter === 0) {
-        finalCallback(null, results);
+      counter++;
+      if (counter === arrayLength) {
+        finalCallback(null, arrayOfResults);
       }
     });
   });
 };
 
 // Use case
-
+let i = 0;
 asyncFilter(
   [1, 2, 3, 4, 5, 6],
   (number, cb) => {
     setTimeout(() => {
       cb(null, number % 2 === 0);
-    }, 1000);
+    }, 1000 - i * 100);
+    i++;
   },
   (err, result) => {
     console.log(err, result);
