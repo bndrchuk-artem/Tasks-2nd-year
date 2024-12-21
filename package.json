@@ -1,0 +1,11 @@
+{
+  "name": "tasks-2nd-year",
+  "version": "1.0.0",
+  "description": "Файл містить посилання на всі лабораторні роботиs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
