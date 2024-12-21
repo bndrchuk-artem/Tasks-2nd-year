@@ -2,7 +2,7 @@
 
 const asyncFilter = (array, asyncCallback, finalCallback) => {
   const results = [];
-  let counter = 0;
+  let counter = array.length;
 
   array.forEach((item, index) => {
     asyncCallback(item, (err, include) => {
