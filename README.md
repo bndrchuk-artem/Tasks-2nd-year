@@ -5,7 +5,7 @@
 #### Telegram - [@bndrchuk_artem](https://t.me/bndrchuk_artem)
 
 ## Лабораторні роботи 1 семестр(JavaScript)
-1. [Callback based AsyncFilter](https://google.com)
+1. [Callback based AsyncFilter](./Tasks/Task1.js)
 2. [Promise based AsyncFilter](https://google.com)
 3. [Integrate AbortController](https://google.com)
 4. [Stream](https://google.com)
