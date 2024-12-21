@@ -1,6 +1,6 @@
 'use strict';
 
-const asyncFilter = (array, asyncCallback, finalCallback) => {
+const asyncFilter = (array, asyncCallback, resultCallback) => {
   const arrayLength = array.length;
   const arrayOfResults = new Array(arrayLength).fill(null);
   let counter = 0;
@@ -8,17 +8,15 @@ const asyncFilter = (array, asyncCallback, finalCallback) => {
   array.forEach((item, index) => {
     asyncCallback(item, (err, include) => {
       if (err) {
-        finalCallback(err, null);
-        return;
+        return resultCallback(err, null);
       }
 
       if (include) {
         arrayOfResults[index] = item;
       }
 
-      counter++;
-      if (counter === arrayLength) {
-        finalCallback(null, arrayOfResults);
+      if (++counter === arrayLength) {
+        resultCallback(null, arrayOfResults);
       }
     });
   });
