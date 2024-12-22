@@ -14,11 +14,11 @@ const asyncFilter = (array, asyncChecker) => {
 };
 
 // Use case
-let i = 0;
+
 asyncFilter(
   [1, 2, 3, 4, 5, 6],
   (item) =>
-    new Promise((resolve, reject) => {
+    new Promise((resolve) => {
       setTimeout(() => resolve(item % 2 === 0), 1000);
     })
 )
@@ -27,4 +27,24 @@ asyncFilter(
   })
   .catch((err) => {
     console.log(err.message);
+  });
+
+asyncFilter(
+  [1, 2, 3],
+  (item) =>
+    new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (item === 2) {
+          reject(new Error('Some error'));
+        } else {
+          resolve(item >= 1);
+        }
+      }, 2000);
+    })
+)
+  .then((result) => {
+    console.log(result);
+  })
+  .catch((err) => {
+    console.error(err.message);
   });
