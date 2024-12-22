@@ -1,7 +1,9 @@
 'use strict';
 
-const asyncFilter = (array, asyncChecker, signal) => {
+const asyncFilter = (array, asyncChecker, controller) => {
+  const { signal } = controller;
   const abortError = new Error('Operation aborted');
+
   const promises = array.map((item) =>
     new Promise((resolve, reject) => {
       if (signal.aborted) reject(abortError);
@@ -10,14 +12,9 @@ const asyncFilter = (array, asyncChecker, signal) => {
       signal.addEventListener('abort', listener);
 
       asyncChecker(item)
-        .then((result) => {
-          signal.removeEventListener('abort', listener);
-          resolve(result ? item : null);
-        })
-        .catch((err) => {
-          signal.removeEventListener('abort', listener);
-          reject(err);
-        });
+        .then((result) => resolve(result ? item : null))
+        .catch((err) => reject(err))
+        .finally(() => signal.removeEventListener('abort', listener));
     })
   );
 
@@ -28,7 +25,6 @@ const asyncFilter = (array, asyncChecker, signal) => {
 
 // Use case
 const controller = new AbortController();
-const { signal } = controller;
 
 asyncFilter(
   [1, 2, 3, 4, 5, 6],
@@ -36,7 +32,7 @@ asyncFilter(
     new Promise((resolve) => {
       setTimeout(() => resolve(item % 2 === 0), 1200);
     }),
-  signal
+  controller
 )
   .then((result) => {
     console.log(result);
