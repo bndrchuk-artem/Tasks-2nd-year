@@ -6,7 +6,7 @@
 
 ## Лабораторні роботи 1 семестр(JavaScript)
 1. [Callback based AsyncFilter](./Tasks/Task1.js)
-2. [Promise based AsyncFilter](https://google.com)
-3. [Integrate AbortController](https://google.com)
-4. [Stream](https://google.com)
-5. [Lab5](https://google.com)
+2. [Promise based AsyncFilter](./Tasks/Task2.js)
+3. [Integrate AbortController](./Tasks/Task3.js)
+4. [Stream](./Tasks/Task4.js)
+5. [Lab5](./Tasks/Task5.js)
