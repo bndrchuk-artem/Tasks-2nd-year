@@ -1,7 +1,6 @@
 'use strict';
 
-const asyncFilter = (array, asyncChecker, controller) => {
-  const { signal } = controller;
+const asyncFilter = (array, asyncChecker, { signal }) => {
   const abortError = new Error('Operation aborted');
 
   const promises = array.map((item) =>
@@ -30,7 +29,7 @@ asyncFilter(
   [1, 2, 3, 4, 5, 6],
   (item) =>
     new Promise((resolve) => {
-      setTimeout(() => resolve(item % 2 === 0), 1200);
+      setTimeout(() => resolve(item % 2 === 0), 1400);
     }),
   controller
 )
@@ -40,6 +39,18 @@ asyncFilter(
   .catch((err) => {
     console.log('Error caught: ', err.message);
   });
+
+asyncFilter(
+  [1, 2, 3],
+  (item) =>
+    new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (item === 2) reject(new Error('Intentional failure'));
+        else resolve(item % 2 === 0);
+      }, 1200);
+    }),
+  controller
+);
 
 setTimeout(() => {
   controller.abort();
