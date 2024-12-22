@@ -2,13 +2,9 @@
 
 const asyncFilter = (array, asyncChecker) => {
   const promises = array.map((item) =>
-    asyncChecker(item)
-      .then((include) => {
-        if (!include) {
-          return null;
-        }
-        return item;
-      }));
+    asyncChecker(item).then((include) => (include ? item : null))
+  );
+
   return Promise.all(promises)
     .then((results) => results.filter((item) => item !== null));
 };
