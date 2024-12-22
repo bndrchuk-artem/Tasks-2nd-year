@@ -35,3 +35,16 @@ function sumColumn(filePath, columnName) {
     });
   });
 }
+
+// Use case
+
+const filePath = './Tasks/Salary.txt';
+const columnName = 'Salary'; // Column name to sum
+
+sumColumn(filePath, columnName)
+  .then((total) => {
+    console.log(`The total sum of the "${columnName}" column is ${total}`);
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
