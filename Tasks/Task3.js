@@ -1,46 +1,48 @@
 'use strict';
 
-const asyncFilter = (array, asyncChecker) => {
+const asyncFilter = (array, asyncChecker, signal) => {
   const promises = array.map((item) =>
-    asyncChecker(item).then((include) => (include ? item : null))
+    new Promise((resolve, reject) => {
+      if (signal.aborted) {
+        reject('Aborted');
+        return;
+      }
+      signal.addEventListener('abort', () => {
+        reject('Aborted');
+      });
+      asyncChecker(item)
+        .then((result) => {
+          resolve(result ? item : null);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    })
   );
-
-  return Promise.all(promises)
-    .then((results) => results.filter((item) => item !== null));
+  return Promise.all(promises).then((results) =>
+    results.filter((item) => item !== null)
+  );
 };
 
 // Use case
+const controller = new AbortController();
+const { signal } = controller;
 
 asyncFilter(
   [1, 2, 3, 4, 5, 6],
   (item) =>
     new Promise((resolve) => {
-      setTimeout(() => resolve(item % 2 === 0), 1000);
-    })
+      setTimeout(() => resolve(item % 2 === 0), 1600);
+    }),
+  signal
 )
   .then((result) => {
     console.log(result);
   })
   .catch((err) => {
-    console.log(err.message);
+    console.log('Error caught: ', err.message);
   });
 
-asyncFilter(
-  [1, 2, 3],
-  (item) =>
-    new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (item === 2) {
-          reject(new Error('Some error'));
-        } else {
-          resolve(item >= 1);
-        }
-      }, 2000);
-    })
-)
-  .then((result) => {
-    console.log(result);
-  })
-  .catch((err) => {
-    console.error(err.message);
-  });
+setTimeout(() => {
+  controller.abort();
+}, 1500);
