@@ -25,5 +25,13 @@ function sumColumn(filePath, columnName) {
         total += value;
       }
     });
+
+    rl.on('close', () => {
+      resolve(total);
+    });
+
+    rl.on('error', (error) => {
+      reject(error);
+    });
   });
 }
