@@ -9,4 +9,4 @@
 2. [Promise based AsyncFilter](./Tasks/Task2.js)
 3. [Integrate AbortController](./Tasks/Task3.js)
 4. [Stream](./Tasks/Task4.js)
-5. [Lab5](./Tasks/Task5.js)
+5. [EventEmitter](./Tasks/Task5.js)
