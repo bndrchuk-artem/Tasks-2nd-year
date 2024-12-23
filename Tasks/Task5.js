@@ -37,6 +37,19 @@ class DataProcessor {
   }
 }
 
+class DataConsumer {
+  constructor(abortController) {
+    this.abortController = abortController;
+    ee.on('processedData', (data) => {
+      if (this.abortController.signal.aborted) {
+        console.log('Consuming aborted');
+        return;
+      }
+      console.log('Consumed processed data:', data);
+    });
+  }
+}
+
 // Example usage
 (async () => {
   const abortController = new AbortController();
