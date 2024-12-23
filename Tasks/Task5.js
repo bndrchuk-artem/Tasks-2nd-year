@@ -17,3 +17,20 @@ class DataProducer {
   }
 }
 
+// Example usage
+(async () => {
+  const abortController = new AbortController();
+
+  const producer = new DataProducer();
+  const processor = new DataProducer();
+  const consumer = new DataProducer();
+
+  console.log('Start');
+  producer.produceData();
+
+  setTimeout(() => {
+    console.log('Aborting...');
+    abortController.abort();
+  }, 10000);
+
+})();
