@@ -4,16 +4,35 @@ const EventEmitter = require('events');
 const ee = new EventEmitter();
 
 class DataProducer {
-  constructor() {
+  constructor(abortController) {
     this.counter = 0;
+    this.timer = null;
+    this.abortController = abortController;
+
+    this.abortController.signal.addEventListener('abort', () => {
+      this.stopProducing(); // Reuse the method to stop the interval
+    });
   }
 
   async produceData() {
-    setInterval(() => {
+    if (this.abortController.signal.aborted) {
+      console.log('[DataProducer] Aborted before starting');
+      return;
+    }
+
+    this.timer = setInterval(() => {
       const data = { id: ++this.counter, value: Math.random() * 100 };
-      console.log('Generated data:', data);
+      console.log('[DataProducer] Generated data:', data);
       ee.emit('newData', data);
     }, 1000); // Generates and sends data every 1000 ms
+  }
+
+  stopProducing() {
+    if (this.timer) {
+      clearInterval(this.timer); // Clear the interval
+      this.timer = null; // Reset the timer reference
+      console.log('[DataProducer] Stopped producing data');
+    }
   }
 }
 
@@ -22,10 +41,10 @@ class DataProcessor {
     this.abortController = abortController;
     ee.on('newData', async (data) => {
       if (this.abortController.signal.aborted) {
-        console.log('Processing aborted');
+        console.log('[DataProcessor] Processing aborted');
         return;
       }
-      console.log('Processing data:', data);
+      console.log('[DataProcessor] Processing data:', data);
       const processedData = await this.processData(data);
       ee.emit('processedData', processedData);
     });
@@ -42,10 +61,10 @@ class DataConsumer {
     this.abortController = abortController;
     ee.on('processedData', (data) => {
       if (this.abortController.signal.aborted) {
-        console.log('Consuming aborted');
+        console.log('[DataConsumer] Consuming aborted');
         return;
       }
-      console.log('Consumed processed data:', data);
+      console.log('[DataConsumer] Consumed processed data:', data);
     });
   }
 }
@@ -54,9 +73,9 @@ class DataConsumer {
 (async () => {
   const abortController = new AbortController();
 
-  const producer = new DataProducer();
-  const processor = new DataProducer(abortController);
-  const consumer = new DataProducer(abortController);
+  const producer = new DataProducer(abortController);
+  const processor = new DataProcessor(abortController);
+  const consumer = new DataConsumer(abortController);
 
   console.log('Start');
   producer.produceData();
